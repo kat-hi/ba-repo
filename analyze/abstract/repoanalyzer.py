@@ -69,12 +69,13 @@ class RepoAnalyzer(ABC):
 
         number_effects = self.results['results']["number_effects"]
         number_changed_files = self.results['results']["number_changed_files"]
+        
 
         if iterative:
-            filename = f'../out/reports_iterative_{repo_name}.json'
+            filename = f'reports_iterative_{repo_name}.json'
             self.results['results']['success_rate'] = ''
         else:
-            filename = f'../out/reports_{repo_name}.json'
+            filename = f'reports_{repo_name}.json'
             self.results['results']['success_rate'] = number_effects / number_changed_files * 100
 
         with open(filename, 'w') as file:
