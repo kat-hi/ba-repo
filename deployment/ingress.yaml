@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ebc-api-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+#    nginx.ingress.kubernetes.io/whitelist-source-range: "141.64.0.0/16,2001:638:812::/48,10.0.0.0/8"
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - secretName: "ebc-api2-tls"
+    hosts:
+    - "ebc.api.datexis.com"
+  rules:
+  - host: "ebc.api.datexis.com"
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: ebc-service
+          servicePort: 5000

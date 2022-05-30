@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebc-server
+  labels:
+    app: ebc-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ebc-server
+    spec:
+      containers:
+        - name: ebc-server
+          image: registry.datexis.com/ksachs/ebc-server:v1
+          ports:
+            - name: client-port
+              containerPort: 5000
+          volumeMounts:
+            - name: ebc-pv-claim
+              mountPath: /db
+          resources:
+            requests:
+              cpu: "1"
+              memory: "4Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+      priorityClassName: important
+      nodeSelector:
+        cpuclass: epyc
+      volumes:
+        - name: ebc-pv-claim
+          persistentVolumeClaim:
+            claimName: ebc-pv-claim
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: private-registry-auth
+  selector:
+    matchLabels:
+      app: ebc-server
+
