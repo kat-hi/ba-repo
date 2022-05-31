@@ -30,10 +30,11 @@ from db.models.revisionChangedFileEffect import RevisionChangedFileEffect
 from entry import Session
 from parser.metrics_extractor import extract
 
+
 class GitRepoAnalyzer(RepoAnalyzer):
 
-    def __init__(self, repository_path, start_date):
-        super().__init__(repository_path, start_date)
+    def __init__(self, repository_path, start_date, time_delta=None):
+        super().__init__(repository_path, start_date, time_delta)
 
     def analyze_branches(self):
         self._collect_branches()
@@ -107,7 +108,7 @@ class GitRepoAnalyzer(RepoAnalyzer):
         # annahme: branch wird nicht mehrmals gemerged (nur ein merge commit wird jeweils zugeordnet)
         with Session.begin() as session:
             if self.start_date:
-                merges = session.query(Revisions).filter(Revisions.is_merge)\
+                merges = session.query(Revisions).filter(Revisions.is_merge) \
                     .filter(Revisions.authordate > self.start_date).all()
             else:
                 merges = session.query(Revisions).filter(Revisions.is_merge).all()

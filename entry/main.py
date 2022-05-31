@@ -41,6 +41,12 @@ if __name__ == '__main__':
         help='analyze-effect-by-commit')
 
     subparser_analyze_iterative.add_argument(
+        '--time-delta', metavar='<path>', type=str,
+        help='The path to the history to be analyzed.',
+        default=2,
+        required=False)
+
+    subparser_analyze_iterative.add_argument(
         '--repository-path', metavar='<path>', type=str,
         help='The path to the history to be analyzed.',
         required=True)
@@ -64,7 +70,8 @@ if __name__ == '__main__':
         analyze_history(repository_path, include_deleted_contexts, start_date)
     if command == 'iterative-analysis':
         repository_path = args.repository_path
-        iterative_analysis(repository_path)
+        time_delta = args.time_delta
+        iterative_analysis(repository_path, time_delta)
     elif command == 'data-dump':
         repository_path = args.repository_path
         write_output(repository_path)

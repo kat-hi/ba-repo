@@ -16,9 +16,10 @@ import json
 
 class RepoAnalyzer(ABC):
 
-    def __init__(self, repository_path, start_date):
+    def __init__(self, repository_path, start_date, time_delta):
         self.iterative = False
         self.repository_path = repository_path
+        self.time_delta = time_delta
         self.start_date = start_date
         self.branches = dict()
         self.branches_to_analyze = list()

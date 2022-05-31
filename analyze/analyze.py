@@ -50,16 +50,16 @@ def analyze_history(repository_path, include_deleted_contexts, start_date):
     analyzer.dump_results(processing_time, execution_time)
 
 
-def iterative_analysis(repository_path, start_date=None):
+def iterative_analysis(repository_path, time_delta, start_date=None):
     logging.info("===ANALYSE NEW HISTORY===")
     analyzer = None
 
     if os.path.isdir(os.path.join(repository_path, ".git")):
-        analyzer = IterativeGitrepoAnalyzer(repository_path)
+        analyzer = IterativeGitrepoAnalyzer(repository_path, time_delta)
         analyzer.default_branchname = "origin/master"
 
     elif os.path.isdir(os.path.join(repository_path, ".svn")):
-        analyzer = SvnRepoAnalyzer(repository_path, start_date)
+        analyzer = SvnRepoAnalyzer(repository_path, start_date, time_delta)
         analyzer.default_branchname = "trunk"
 
     processing_t0 = time.process_time()
