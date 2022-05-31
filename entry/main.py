@@ -41,7 +41,7 @@ if __name__ == '__main__':
         help='analyze-effect-by-commit')
 
     subparser_analyze_iterative.add_argument(
-        '--time-delta', metavar='<path>', type=str,
+        '--time-delta', metavar='<path>', type=int,
         help='The path to the history to be analyzed.',
         default=2,
         required=False)
