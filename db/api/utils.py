@@ -117,8 +117,8 @@ def find_second_parent_by_merge_hash(revision_hash, affected_branch_id):
                 if not parent_revision.affected_branch == affected_branch_id:
                     return parent_hash[0]
             else:
+                # parents cannot be found sometimes if deleted branches are not included
                 print(f'parent not found: {revision_hash}')
-
 
 def is_merge_commit(revision):
     with Session.begin() as session:

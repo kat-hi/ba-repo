@@ -29,8 +29,6 @@ from db.models.fileversion import Fileversion
 from db.models.revisionChangedFileEffect import RevisionChangedFileEffect
 from entry import Session
 from parser.metrics_extractor import extract
-from datetime import datetime, timedelta
-
 
 class GitRepoAnalyzer(RepoAnalyzer):
 
@@ -59,10 +57,6 @@ class GitRepoAnalyzer(RepoAnalyzer):
 
         if self.start_date:
             startdate = self.start_date.split('T')[0]
-            cmd = cmd + [f'--since="{startdate}"']
-        elif self.iterative:
-            # @todo consider timezones!
-            startdate = datetime.today() - timedelta(days=2)
             cmd = cmd + [f'--since="{startdate}"']
 
         revisions = self._parse_logs(cmd, LOGFILE)
@@ -112,7 +106,12 @@ class GitRepoAnalyzer(RepoAnalyzer):
         logging.info('===ANALYZE MERGES===')
         # annahme: branch wird nicht mehrmals gemerged (nur ein merge commit wird jeweils zugeordnet)
         with Session.begin() as session:
-            merges = session.query(Revisions).filter(Revisions.is_merge).all()
+            if self.start_date:
+                merges = session.query(Revisions).filter(Revisions.is_merge)\
+                    .filter(Revisions.authordate > self.start_date).all()
+            else:
+                merges = session.query(Revisions).filter(Revisions.is_merge).all()
+
             logging.info('... for each merge find transported commits')
             for merge_revision in merges:
                 second_parent_hash = find_second_parent_by_merge_hash(merge_revision.hash,

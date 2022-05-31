@@ -1,4 +1,6 @@
 import logging
+from datetime import datetime, timedelta
+
 from analyze.git.analyzer import GitRepoAnalyzer
 from analyze.git.api.cmd import get_mainpath_to_genesis
 from analyze.exe_runner import ExeRunner
@@ -11,6 +13,7 @@ from entry import Session
 class IterativeGitrepoAnalyzer(GitRepoAnalyzer):
     def __init__(self, repository_path):
         super().__init__(repository_path, start_date=None)
+        self.start_date = datetime.today() - timedelta(days=2)
 
     def analyze_branches(self):
         db_branchnames = find_all_persisted_branchnames()
@@ -42,7 +45,8 @@ class IterativeGitrepoAnalyzer(GitRepoAnalyzer):
                 genesis_path_current_branch = self.branches[new_branch.name]['branch_path_to_analyze_desc']
                 if not genesis_path_current_branch:
                     genesis_path_current_branch = get_mainpath_to_genesis(self.repository_path, new_branch.name)
-                    self.branches[new_branch.name]['branch_path_to_analyze_desc'] = genesis_path_current_branch  # all commits
+                    self.branches[new_branch.name][
+                        'branch_path_to_analyze_desc'] = genesis_path_current_branch  # all commits
 
                 if new_branch.origin_revision is None:
                     commits_of_others = set()
@@ -60,7 +64,8 @@ class IterativeGitrepoAnalyzer(GitRepoAnalyzer):
                             self.branches[other_branch.name]["branch_path_to_analyze_desc"] = genesis_path_other_branch
                             commits_of_others.update(genesis_path_other_branch)
 
-                    commit_in_others = next(filter(lambda commit: commit in commits_of_others, genesis_path_current_branch), None)
+                    commit_in_others = next(
+                        filter(lambda commit: commit in commits_of_others, genesis_path_current_branch), None)
                     if commit_in_others:
                         new_branch.origin_revision = commit_in_others
                         index_origin = genesis_path_current_branch.index(commit_in_others)
