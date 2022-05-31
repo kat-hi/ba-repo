@@ -13,7 +13,7 @@ from entry import Session
 class IterativeGitrepoAnalyzer(GitRepoAnalyzer):
     def __init__(self, repository_path):
         super().__init__(repository_path, start_date=None)
-        self.start_date = datetime.today() - timedelta(days=2)
+        self.start_date = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S %z')
 
     def analyze_branches(self):
         db_branchnames = find_all_persisted_branchnames()
